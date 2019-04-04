@@ -98,11 +98,13 @@ def init_db():
 
 
 def drop_db():
-    report('db', 'Dropping database')
+    report('db', 'Truncating database')
     try:
-        os.remove(settings.DATABASES['default']['NAME'])
-    except (OSError, IOError):
-        pass
+        call_command('flush', interactive=False)
+    except Exception as e:
+        report(
+            'db',
+            'Could not truncate database. This is ok if your database is already empty. %s' % e)
 
 
 class SentryBox(object):
